@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-xl">
+	<div class="table-responsive">
+		<div class="table-wrapper">
+			<form action="/add-books-from-import/" method="post">
+				{% csrf_token %}
+				<div class="table-title">
+					<div class="row">
+						<div class="col-sm-6">
+							<h2><a href="/" style="color: white;">Manage <b>Books</b></a></h2>
+						</div>
+						<div class="col-sm-6">
+							<button type="submit" class="btn btn-success"><i class="material-icons">&#xE147;</i> <span>Add Checked Book</span></button>
+						</div>
+					</div>
+				</div>
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>
+								<span class="custom-checkbox">
+									<input type="checkbox" id="selectAll">
+									<label for="selectAll"></label>
+								</span>
+							</th>
+							<th>Picture</th>
+							<th>Title</th>
+							<th>Authors</th>
+							<th>Publish date</th>
+							<th>ISBNs</th>
+							<th>Count pages</th>
+							<th>Language name</th>
+						</tr>
+					</thead>
+					<tbody>
+            	    {% for item in books.items %}
+						<tr>
+							<td>
+								<span class="custom-checkbox">
+									<input type="checkbox" id="checkbox1" name="book" value="{{item.selfLink}}">
+									<label for="checkbox1"></label>
+								</span>
+							</td>
+							<td><img width="100" src="{{item.volumeInfo.imageLinks.thumbnail}}"></td>
+							<td>{{item.volumeInfo.title}}</td>
+							<td>{% for author in item.volumeInfo.authors %}{{author}}, {% endfor %}</td>
+							<td>{{item.volumeInfo.publishedDate}}</td>
+							<td>{% for isbn in item.volumeInfo.industryIdentifiers %}{{isbn.identifier}}, {% endfor %}</td>
+							<td>{{item.volumeInfo.pageCount}}</td>
+							<td>{{item.volumeInfo.language}}</td>
+						</tr>
+            	    {% endfor %}
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- Edit Modal HTML -->
+<div id="addBookModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">
+					<h4 class="modal-title">Add Book</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Title</label>
+						<input type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Publish date</label>
+						<input type="date" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Author</label>
+						<input type="" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Count pages</label>
+						<input type="number" class="form-control" min="1" required>
+					</div>
+					<div class="form-group">
+						<label>Language</label>
+						<input type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Link to picture</label>
+						<input type="text" class="form-control" required>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-success" value="Add">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- Import Modal HTML -->
+<div id="importBookModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="import/" method="get">
+                {% csrf_token %}
+				<div class="modal-header">
+					<h4 class="modal-title">Import Book</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Search words</label>
+						<input type="search" class="form-control" placeholder="Search..." required>
+					</div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="intitle">
+                        <label class="form-check-label" for="intitle">
+                            Search in title
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="inauthor">
+                        <label class="form-check-label" for="inauthor">
+                            Search in author
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="inpublisher">
+                        <label class="form-check-label" for="inpublisher">
+                            Search in publisher
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="subject">
+                        <label class="form-check-label" for="subject">
+                            Search in the category list of the volume
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="isbn">
+                        <label class="form-check-label" for="isbn">
+                            Search in ISBN number
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="lccn">
+                        <label class="form-check-label" for="lccn">
+                            Search in Library of Congress Control Number
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="oclc">
+                        <label class="form-check-label" for="oclc">
+                            Search in Online Computer Library Center number
+                        </label>
+                    </div>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+					<input type="submit" class="btn btn-primary" value="Search">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock content %}
